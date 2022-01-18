@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
+  <types:catalog>
+    <types:type name="emp" format="json">
+      <types:shape format="weave" example="examples/emp_data.json"><![CDATA[%dw 2.0
+
+type emp = {|
+  id: Number {"typeId": "int"}, 
+  name: String, 
+  sal: Number {"typeId": "int"}
+|} {"example": "{\\\"id\\\":444,\\\"name\\\":\\\"haseeb\\\",\\\"sal\\\":42122}"}
+
+]]></types:shape>
+    </types:type>
+  </types:catalog>
+  <types:enrichment select="#08c6bb58-0f42-4f3f-bc7b-6e4b5049c749">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="emp"/>
+        </types:message>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+</types:mule>

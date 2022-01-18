@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="emp_appFlow" doc:id="a189c1d0-fee7-499f-9217-0ea249bab910" >
+		<http:listener doc:name="Listener" doc:id="0848fabf-16d7-48e0-8048-387be96b56df" config-ref="HTTP_Listener_config" path="/emp"/>
+		<db:select doc:name="Select" doc:id="a88fb081-3a2e-4aa3-a697-f714f6e3945d" config-ref="Database_Config">
+			<db:sql ><![CDATA[select * from Employee]]></db:sql>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="092f245b-a526-401e-925b-67e4ac1f394c" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="emp_appFlow1" doc:id="d1594119-1524-4c69-9125-c3531a8e56bf" >
+		<http:listener doc:name="Listener" doc:id="59c5b45a-12e9-4ac2-9f6c-c766e7334072" config-ref="HTTP_Listener_config" path="/abc"/>
+		<db:insert doc:name="Insert" doc:id="08c6bb58-0f42-4f3f-bc7b-6e4b5049c749" config-ref="Database_Config">
+			<db:sql ><![CDATA[INSERT INTO Employee(E_ID , E_NAME , E_SALARY)
+VALUES (:id, :name , :sal)]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	id:payload.id,
+	name: payload.name,
+	sal:payload.sal
+	
+}]]]></db:input-parameters>
+		</db:insert>
+		<ee:transform doc:name="Transform Message" doc:id="546538fa-0e35-4835-87eb-51a114b79f32" />
+	</flow>
+</mule>
